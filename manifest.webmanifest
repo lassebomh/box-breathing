@@ -4,12 +4,11 @@
     "display": "fullscreen",
     "icons": [
       {
-        "src": "favicon.ico",
+        "src": "./favicon.ico",
         "sizes": "272x272",
         "type": "image/png"
       }
     ],
-    "name": "Box Breathing",
-    "start_url": "/index.html"
+    "name": "Box Breathing"
   }
   
