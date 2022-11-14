@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.webmanifest" />
+    <title>Box Breathing Online</title>
+    <meta name="description" content="Box Breathing Online is an animation that helps using the Box Breathing technique. It is not a gif, just an animation to guide your breathing.">
+    <style>
+        :root {
+            --bg-color: #131313;
+
+            --box-border-width: 2px;
+            --box-border-color: white;
+            --box-side-length: calc(min(80vmin, 250px));
+            --box-fill-color-transition: #003794;
+            --box-fill-color: #0972d5;
+
+            --breath-gradient: linear-gradient(
+                135deg,
+                var(--box-fill-color) 0%,
+                var(--box-fill-color-transition) 30%,
+                var(--bg-color) 75%
+            );
+
+            --animation-options: 16s infinite cubic-bezier(0.2, 0, 0.8, 1);
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #box-container {
+            position: relative;
+        }
+        
+        #box {
+            width: var(--box-side-length);
+            height: var(--box-side-length);
+            border: var(--box-border-width) solid var(--box-border-color);
+        }
+        
+        #breath-indicator {
+            background: var(--breath-gradient);
+            background-size: 700% 700%;
+            width: 100%;
+            position: absolute;
+            box-sizing: border-box;
+            bottom: 0;
+            border-top: var(--box-border-width) solid var(--box-border-color);
+            z-index: -1;
+
+            animation: breath-indicator-animation var(--animation-options);
+        }
+
+        @keyframes breath-indicator-animation {
+            0% { height: 0%; background-position: 100% 50%; }
+            25% { height: 100%; background-position: 0% 0%; }
+            50% { height: 100%; background-position: 0% 0%; }
+            75% { height: 0%; background-position: 100% 50%; }
+            100% { height: 0%; background-position: 100% 50%; }
+        }
+
+        #dot {
+            width: 1.2rem;
+            height: 1.2rem;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            border: var(--box-border-width) solid var(--box-border-color);
+            border-radius: 400rem;
+            background: #131313;
+            animation: dot-animation var(--animation-options);
+            
+            /* left: calc(0% + var(--box-border-width)/2);
+            top: calc(100% - var(--box-border-width)/2);
+            background-position: 100% 50%; */
+
+            left: calc(0% + var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+        }
+
+        @keyframes dot-animation {
+            0% {
+                left: calc(0% + var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+            }
+            25% {
+                left: calc(0% + var(--box-border-width)/2);
+                top: calc(0% + var(--box-border-width)/2);
+                background-position: 0% 0%;
+            }
+            50% {
+                left: calc(100% - var(--box-border-width)/2);
+                top: calc(0% + var(--box-border-width)/2);
+                background-position: 0% 0%;
+            }
+            75% {
+                left: calc(100% - var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+            }
+            100% {
+                left: calc(0% + var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="box-container">
+        <div id="box"></div>
+        <div id="breath-indicator"></div>
+        <div id="dot"></div>
+    </div>
+</body>
+</html>

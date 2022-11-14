@@ -1,0 +1,15 @@
+{
+    "background_color": "#131313",
+    "description": "Box Breathing Online is an animation that helps using the Box Breathing technique.",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "src": "favicon.ico",
+        "sizes": "272x272",
+        "type": "image/png"
+      }
+    ],
+    "name": "Box Breathing",
+    "start_url": "/index.html"
+  }
+  
