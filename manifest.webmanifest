@@ -5,10 +5,12 @@
     "icons": [
       {
         "src": "./favicon.ico",
-        "sizes": "272x272",
+        "sizes": "256x256",
         "type": "image/png"
       }
     ],
-    "name": "Box Breathing"
+    "name": "Box Breathing",
+    "start_url": "./index.html",
+    "theme_color": "#131313"
   }
   

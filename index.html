@@ -6,8 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/png" href="./favicon.ico"/>
-    <title>Box Breathing Online</title>
-    <meta name="description" content="Box Breathing Online is an animation that helps using the Box Breathing technique. It is not a gif, just an animation to guide your breathing.">
+    <title>Box Breathing Online: An animation to help reduce anxiety and increase mindfulness with square breathing</title>
+    <meta name="description" content="Box Breathing Online is an animation that helps using the Box Breathing technique, also known as square breathing. It is not a gif, just a simple animation to guide your breathing.">
+    <meta name="theme-color" content="#131313" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    <script>
+        // only for offline caching.
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
+    </script>
     <style>
         :root {
             --bg-color: #131313;
@@ -35,10 +43,22 @@
 
         body {
             background-color: var(--bg-color);
+            color: var(--box-border-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* overflow: hidden; */
+        }
+
+        :root::-webkit-scrollbar { width: 0 }
+        :root { scrollbar-width: none; }
+
+
+        #box-breathing-container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+
+            border-bottom: 2px solid #222;
         }
 
         #box-container {
@@ -119,13 +139,26 @@
             }
         }
 
+        #content {
+            width: 90vmin;
+            padding: 3rem 0;
+            margin: auto;
+        }
+
     </style>
 </head>
 <body>
-    <div id="box-container">
-        <div id="box"></div>
-        <div id="breath-indicator"></div>
-        <div id="dot"></div>
+    <div id="box-breathing-container">
+        <div id="box-container">
+            <div id="box"></div>
+            <div id="breath-indicator"></div>
+            <div id="dot"></div>
+        </div>
+    </div>
+    <div id="content">
+        <h1>
+            Box Breathing Online: An animation to help reduce anxiety and increase mindfulness with square breathing
+        </h1>
     </div>
 </body>
 </html>
