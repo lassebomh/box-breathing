@@ -29,10 +29,10 @@
                 localStorage.setItem("arrow_shown", "true")
             }
         
-            if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
-                setTimeout(showDownarrow, 1500)
-                setTimeout(hideDownarrow, 6000)
-            }
+            // if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
+                setTimeout(showDownarrow, 3000)
+                setTimeout(hideDownarrow, 5000)
+            // }
         })
     </script>
 </head>
@@ -178,7 +178,7 @@
 
     #down-arrow {
         position: absolute;
-        bottom: 4em;
+        bottom: 10vh;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
