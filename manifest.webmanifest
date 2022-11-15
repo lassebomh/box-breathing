@@ -1,16 +1,16 @@
 {
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "name": "Box Breathing",
+    "description": "Box Breathing Animation is an online guide that assists practicing the Box Breathing technique.",
+    "theme_color": "#131313",
     "background_color": "#131313",
-    "description": "Box Breathing Online is an animation that helps using the Box Breathing technique.",
     "display": "fullscreen",
     "icons": [
-      {
-        "src": "./favicon.ico",
-        "sizes": "256x256",
-        "type": "image/png"
-      }
+        {
+            "src": "./favicon.ico",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
     ],
-    "name": "Box Breathing",
-    "start_url": "./index.html",
-    "theme_color": "#131313"
-  }
-  
+    "start_url": "."
+}

@@ -4,161 +4,254 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" type="image/png" href="./favicon.ico"/>
-    <title>Box Breathing Online: An animation to help reduce anxiety and increase mindfulness with square breathing</title>
-    <meta name="description" content="Box Breathing Online is an animation that helps using the Box Breathing technique, also known as square breathing. It is not a gif, just a simple animation to guide your breathing.">
     <meta name="theme-color" content="#131313" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="./favicon.ico"/>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    
+    <title>Box Breathing Technique: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
+    <meta name="description" content="Box breathing Technique is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It has numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
     <script>
-        // only for offline caching.
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
-        }
-    </script>
-    <style>
-        :root {
-            --bg-color: #131313;
-
-            --box-border-width: 2px;
-            --box-border-color: white;
-            --box-side-length: calc(min(80vmin, 250px));
-            --box-fill-color-transition: #003794;
-            --box-fill-color: #0972d5;
-
-            --breath-gradient: linear-gradient(
-                135deg,
-                var(--box-fill-color) 0%,
-                var(--box-fill-color-transition) 30%,
-                var(--bg-color) 75%
-            );
-
-            --animation-options: 16s infinite cubic-bezier(0.2, 0, 0.8, 1);
-        }
-
-        * {
-            padding: 0;
-            margin: 0;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--box-border-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* overflow: hidden; */
-        }
-
-        :root::-webkit-scrollbar { width: 0 }
-        :root { scrollbar-width: none; }
-
-
-        #box-breathing-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-
-            border-bottom: 2px solid #222;
-        }
-
-        #box-container {
-            position: relative;
-        }
-        
-        #box {
-            width: var(--box-side-length);
-            height: var(--box-side-length);
-            border: var(--box-border-width) solid var(--box-border-color);
-        }
-        
-        #breath-indicator {
-            background: var(--breath-gradient);
-            background-size: 700% 700%;
-            width: 100%;
-            position: absolute;
-            box-sizing: border-box;
-            bottom: 0;
-            border-top: var(--box-border-width) solid var(--box-border-color);
-            z-index: -1;
-
-            animation: breath-indicator-animation var(--animation-options);
-        }
-
-        @keyframes breath-indicator-animation {
-            0% { height: 0%; background-position: 100% 50%; }
-            25% { height: 100%; background-position: 0% 0%; }
-            50% { height: 100%; background-position: 0% 0%; }
-            75% { height: 0%; background-position: 100% 50%; }
-            100% { height: 0%; background-position: 100% 50%; }
-        }
-
-        #dot {
-            width: 1.2rem;
-            height: 1.2rem;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            border: var(--box-border-width) solid var(--box-border-color);
-            border-radius: 400rem;
-            background: #131313;
-            animation: dot-animation var(--animation-options);
+        window.addEventListener('load', async () => {
             
-            /* left: calc(0% + var(--box-border-width)/2);
-            top: calc(100% - var(--box-border-width)/2);
-            background-position: 100% 50%; */
-
-            left: calc(0% + var(--box-border-width)/2);
-                top: calc(100% - var(--box-border-width)/2);
-                background-position: 100% 50%;
-        }
-
-        @keyframes dot-animation {
-            0% {
-                left: calc(0% + var(--box-border-width)/2);
-                top: calc(100% - var(--box-border-width)/2);
-                background-position: 100% 50%;
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js');
             }
-            25% {
-                left: calc(0% + var(--box-border-width)/2);
-                top: calc(0% + var(--box-border-width)/2);
-                background-position: 0% 0%;
+        
+            const downarrow = document.getElementById("down-arrow")
+        
+            function hideDownarrow(event) {
+                downarrow.style.opacity = '0'
+                window.removeEventListener('scroll', hideDownarrow)
             }
-            50% {
-                left: calc(100% - var(--box-border-width)/2);
-                top: calc(0% + var(--box-border-width)/2);
-                background-position: 0% 0%;
+        
+            function showDownarrow(event) {
+                downarrow.style.opacity = '1'
+                window.addEventListener('scroll', hideDownarrow)
+                localStorage.setItem("arrow_shown", "true")
             }
-            75% {
-                left: calc(100% - var(--box-border-width)/2);
-                top: calc(100% - var(--box-border-width)/2);
-                background-position: 100% 50%;
+        
+            if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
+                setTimeout(showDownarrow, 1500)
+                setTimeout(hideDownarrow, 5000)
             }
-            100% {
-                left: calc(0% + var(--box-border-width)/2);
-                top: calc(100% - var(--box-border-width)/2);
-                background-position: 100% 50%;
-            }
-        }
-
-        #content {
-            width: 90vmin;
-            padding: 3rem 0;
-            margin: auto;
-        }
-
-    </style>
+        })
+    </script>
 </head>
 <body>
-    <div id="box-breathing-container">
-        <div id="box-container">
-            <div id="box"></div>
-            <div id="breath-indicator"></div>
-            <div id="dot"></div>
+    <div id="visual">
+        <div id="box-breathing-container">
+            <div id="box-container">
+                <div id="box"></div>
+                <div id="breath-indicator"></div>
+                <div id="dot"></div>
+            </div>
         </div>
+        <svg id="down-arrow" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/>
+        </svg>
     </div>
     <div id="content">
-        <h1>
-            Box Breathing Online: An animation to help reduce anxiety and increase mindfulness with square breathing
-        </h1>
+        <!-- <p>Something</p> -->
+        <h1>Box Breathing Technique <span>A visual animation to help with calmness, mindfulness, stress and anxiety.</span></h1>
+        <p>
+            This box breathing animation (not a gif or simple diagram) visually guides you in this useful exercise. It is also known as square breathing or diaphragmatic breathing. It has numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+        </p>
+        <p>
+            Box Breathing follows a simple pattern:
+            <ul>
+                <li>Breathe in (4s)</li>
+                <li>Hold (4s)</li>
+                <li>Breathe out (4s)</li>
+                <li>Hold (4s)</li>
+            </ul>
+            ... and repeat.
+        </p>
+        <p>
+            Futher details on exercise from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">Cleveland Clinic</a>:
+        </p>
+        <ol>
+            <li>Sit comfortably, with your knees bent and your shoulders, head and neck relaxed.</li>
+            <li>Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.</li>
+            <li>Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.</li>
+            <li>Tighten your stomach muscles, so that your stomach moves back in, as you exhale through pursed lips. The hand on your upper chest must remain as still as possible.</li>
+        </ol>
+        <p>
+            I made this site as a CSS exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The source code can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
+        </p>
     </div>
 </body>
+<style>
+    :root {
+        --bg-color: #131313;
+
+        --box-border-width: 2px;
+        --box-border-color: white;
+        --box-side-length: calc(min(80vmin, 250px));
+        --box-fill-color-transition: #003794;
+        --box-fill-color: #0972d5;
+
+        --breath-gradient: linear-gradient(
+            135deg,
+            var(--box-fill-color) 0%,
+            var(--box-fill-color-transition) 30%,
+            var(--bg-color) 75%
+        );
+
+        --animation-options: 16s infinite cubic-bezier(0.2, 0, 0.8, 1);
+
+        font-size: calc(min(18px, 5vmin));
+    }
+
+    h1 {
+        font-weight: 500;
+        line-height: 1.2em;
+    }
+
+    h1 > span {
+        font-weight: 300;
+        color: #999;
+        font-size: 0.7em;
+        line-height: 0em;
+    }
+
+    h1 > span::before {
+        content:"\a";
+        white-space: pre;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--box-border-color);
+        font-family: 'IBM Plex Sans', sans-serif;
+        margin: 0;
+    }
+
+    blockquote {
+        border-left: 2px solid #444;
+        color: #888;
+        margin-left: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    ul {
+        padding-left: 1.5rem;
+    }
+
+    :root::-webkit-scrollbar { width: 0 }
+    :root { scrollbar-width: none; }
+
+    #visual {
+        position: relative;
+    }
+
+    #down-arrow {
+        position: absolute;
+        bottom: 0em;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity .5s linear;
+        fill: #666;
+    }
+
+    #box-breathing-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+
+        border-bottom: 2px solid #222;
+    }
+
+    #box-container {
+        position: relative;
+    }
+    
+    #box {
+        width: var(--box-side-length);
+        height: var(--box-side-length);
+        border: var(--box-border-width) solid var(--box-border-color);
+    }
+    
+    #breath-indicator {
+        background: var(--breath-gradient);
+        background-size: 700% 700%;
+        width: 100%;
+        position: absolute;
+        box-sizing: border-box;
+        bottom: 0;
+        border-top: var(--box-border-width) solid var(--box-border-color);
+        z-index: -1;
+
+        animation: breath-indicator-animation var(--animation-options);
+    }
+
+    @keyframes breath-indicator-animation {
+        0% { height: 0%; background-position: 100% 50%; }
+        25% { height: 100%; background-position: 0% 0%; }
+        50% { height: 100%; background-position: 0% 0%; }
+        75% { height: 0%; background-position: 100% 50%; }
+        100% { height: 0%; background-position: 100% 50%; }
+    }
+
+    #dot {
+        width: 1.2rem;
+        height: 1.2rem;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        border: var(--box-border-width) solid var(--box-border-color);
+        border-radius: 400rem;
+        background: #131313;
+        animation: dot-animation var(--animation-options);
+        
+        /* left: calc(0% + var(--box-border-width)/2);
+        top: calc(100% - var(--box-border-width)/2);
+        background-position: 100% 50%; */
+
+        /* left: calc(0% + var(--box-border-width)/2);
+        top: calc(100% - var(--box-border-width)/2);
+        background-position: 100% 50%; */
+    }
+
+    @keyframes dot-animation {
+        0% {
+            left: calc(0% + var(--box-border-width)/2);
+            top: calc(100% - var(--box-border-width)/2);
+            background-position: 100% 50%;
+        }
+        25% {
+            left: calc(0% + var(--box-border-width)/2);
+            top: calc(0% + var(--box-border-width)/2);
+            background-position: 0% 0%;
+        }
+        50% {
+            left: calc(100% - var(--box-border-width)/2);
+            top: calc(0% + var(--box-border-width)/2);
+            background-position: 0% 0%;
+        }
+        75% {
+            left: calc(100% - var(--box-border-width)/2);
+            top: calc(100% - var(--box-border-width)/2);
+            background-position: 100% 50%;
+        }
+        100% {
+            left: calc(0% + var(--box-border-width)/2);
+            top: calc(100% - var(--box-border-width)/2);
+            background-position: 100% 50%;
+        }
+    }
+
+    #content {
+        width: 90vmin;
+        /* padding: 3rem 0; */
+        margin: auto;
+        padding: 1em 0;
+    }
+
+</style>
 </html>
