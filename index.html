@@ -17,9 +17,7 @@
     <script>
         window.addEventListener('load', async () => {
             
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js');
-            }
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
         
             const downarrow = document.getElementById("down-arrow")
         
@@ -70,7 +68,7 @@
             ... and repeat.
         </p>
         <p>
-            Futher details on exercise from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">Cleveland Clinic</a>:
+            These steps from the <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">Cleveland Clinic</a> can also help if this technique is new to you:
         </p>
         <ol>
             <li>Sit comfortably, with your knees bent and your shoulders, head and neck relaxed.</li>
