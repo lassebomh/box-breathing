@@ -7,8 +7,29 @@
     "display": "fullscreen",
     "icons": [
         {
-            "src": "./favicon.ico",
+            "src": "./icons/icon_512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "./icons/icon_512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "./icons/icon_256.png",
             "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "./icons/icon_180.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
+        {
+            "src": "./icons/icon_64.png",
+            "sizes": "64x64",
             "type": "image/png"
         }
     ],

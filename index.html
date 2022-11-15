@@ -5,15 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#131313" />
-    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" href="./favicon.ico"/>
+    <link rel="apple-touch-icon" href="./icons/icon_180.png">
+    <link rel="icon" type="image/png" href="./icons/icon_64.png"/>
     <link rel="manifest" href="./manifest.webmanifest" />
-
     <link rel="stylesheet" href="./fonts/ibm-plex-sans-v14/font.css">
-
     <title>Box Breathing Technique: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
     <meta name="description" content="Box breathing Technique is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It has numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
-
     <script>
         window.addEventListener('load', async () => {
             
@@ -76,7 +73,7 @@
             <li>Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.</li>
             <li>Tighten your stomach muscles, so that your stomach moves back in, as you exhale through pursed lips. The hand on your upper chest must remain as still as possible.</li>
         </ol>
-        <h3>Installing the app</h3>
+        <h2>Installing the app</h2>
         <p>
             This site works offline if you install it. These steps are for mobile.
         </p>
@@ -109,7 +106,10 @@
     :root {
         --bg-color: #131313;
 
-        --box-border-width: 2px;
+        --animation-options: 16s 0 cubic-bezier(0.2, 0, 0.8, 1);
+
+        --dot-size: 5rem;
+        --box-border-width: 50px;
         --box-border-color: white;
         --box-side-length: calc(min(50vmin, 250px));
         --box-fill-color-transition: #003794;
@@ -122,7 +122,6 @@
             var(--bg-color) 75%
         );
 
-        --animation-options: 16s infinite cubic-bezier(0.2, 0, 0.8, 1);
 
         font-size: calc(min(18px, 5vmin));
     }
@@ -228,14 +227,17 @@
     }
 
     #dot {
-        width: 1.2rem;
-        height: 1.2rem;
+        width: var(--dot-size);
+        height: var(--dot-size);
         position: absolute;
         transform: translate(-50%, -50%);
         border: var(--box-border-width) solid var(--box-border-color);
         border-radius: 400rem;
         background: #131313;
         animation: dot-animation var(--animation-options);
+        
+        left: calc(0% + var(--box-border-width)/2);
+        top: calc(100% - var(--box-border-width)/2);
     }
 
     @keyframes dot-animation {
