@@ -36,7 +36,7 @@
         
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
                 setTimeout(showDownarrow, 1500)
-                setTimeout(hideDownarrow, 5000)
+                setTimeout(hideDownarrow, 6000)
             }
         })
     </script>
@@ -57,7 +57,7 @@
     <div id="content">
         <h1>Box Breathing Technique <span>A visual animation to help with calmness, mindfulness, stress and anxiety.</span></h1>
         <p>
-            This box breathing animation (not a gif or simple diagram) visually guides you in this useful exercise. It is also known as square breathing or diaphragmatic breathing. It has numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+            This box breathing animation (not a gif or simple diagram) visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It has numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
         </p>
         <p>
             Box Breathing follows a simple pattern:
@@ -78,23 +78,29 @@
             <li>Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.</li>
             <li>Tighten your stomach muscles, so that your stomach moves back in, as you exhale through pursed lips. The hand on your upper chest must remain as still as possible.</li>
         </ol>
-        <h3>Installing for easy use</h3>
+        <h3>Installing the app</h3>
         <p>
-            This site works offline if you install it.
+            This site works offline if you install it. These steps are for mobile.
         </p>
         <p>
-            On iPhone:
+            On Safari:
             <ol>
                 <li>Press the share button</li>
                 <li>Press "Add to Home Screen"</li>
             </ol>
-        </p>
-        <p>
-            On Android:
+            On Chrome:
             <ol>
                 <li>Press on the triple-dot icon</li>
-                <li>Press "Install app" on Chrome and "Add to Home screen" on Firefox</li>
+                <li>Press "Install app"</li>
             </ol>
+            On Firefox:
+            <ol>
+                <li>Press on the triple-dot icon</li>
+                <li>Press "Add to Home Screen"</li>
+            </ol>
+        </p>
+        <p>
+            If you're on Chrome Desktop you can press the button to the left of the bookmark button in the url bar.
         </p>
         <p>
             I made this site as a CSS exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The source code can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
@@ -175,12 +181,12 @@
 
     #down-arrow {
         position: absolute;
-        bottom: 0em;
+        bottom: 4em;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
         transition: opacity .5s linear;
-        fill: #666;
+        fill: #888;
     }
 
     #box-breathing-container {
@@ -189,7 +195,7 @@
         align-items: center;
         height: 100vh;
 
-        border-bottom: 2px solid #222;
+        border-bottom: 1px solid #444;
     }
 
     #box-container {
