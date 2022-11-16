@@ -16,7 +16,7 @@
             
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
         
-            const downarrow = document.getElementById("down-arrow")
+            const downarrow = document.getElementById("guide-arrow")
         
             function hideDownarrow(event) {
                 downarrow.style.opacity = '0'
@@ -45,9 +45,12 @@
                 <div id="dot"></div>
             </div>
         </div>
-        <svg id="down-arrow" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/>
-        </svg>
+        <div id="guide-arrow">
+            <div>Guide</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/>
+            </svg>
+        </div>
     </div>
     <div id="content">
         <h1>Box Breathing Technique <span>A visual animation to help with calmness, mindfulness, stress and anxiety.</span></h1>
@@ -55,7 +58,7 @@
             This box breathing animation (not a gif or simple diagram) visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It has numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
         </p>
         <p>
-            Box Breathing follows a simple pattern:
+            Box breathing follows a simple pattern:
             <ul>
                 <li>Breathe in (4s)</li>
                 <li>Hold (4s)</li>
@@ -65,13 +68,24 @@
             ... and repeat.
         </p>
         <p>
+            The blue color represents how filled your lungs should be.
+        </p>
+        <p>
             These steps from the <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">Cleveland Clinic</a> can also help if this technique is new to you:
         </p>
         <ol>
-            <li>Sit comfortably, with your knees bent and your shoulders, head and neck relaxed.</li>
-            <li>Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.</li>
-            <li>Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.</li>
-            <li>Tighten your stomach muscles, so that your stomach moves back in, as you exhale through pursed lips. The hand on your upper chest must remain as still as possible.</li>
+            <li>
+                Sit comfortably, with your knees bent and your shoulders, head and neck relaxed.
+            </li>
+            <li>
+                Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.
+            </li>
+            <li>
+                Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.
+            </li>
+            <li>
+                Tighten your stomach muscles, so that your stomach moves back in, as you exhale through pursed lips. The hand on your upper chest must remain as still as possible.
+            </li>
         </ol>
         <h2>Installing the app</h2>
         <p>
@@ -113,7 +127,7 @@
         --box-border-color: white;
         --box-side-length: calc(min(50vmin, 250px));
         --box-fill-color-transition: #003794;
-        --box-fill-color: #0972d5;
+        --box-fill-color: #006ed4;
 
         --breath-gradient: linear-gradient(
             135deg,
@@ -176,14 +190,15 @@
         position: relative;
     }
 
-    #down-arrow {
+    #guide-arrow {
         position: absolute;
-        bottom: 10vh;
+        bottom: 0.5rem;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
         transition: opacity .5s linear;
         fill: #888;
+        text-align: center;
     }
 
     #box-breathing-container {
