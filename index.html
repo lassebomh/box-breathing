@@ -31,7 +31,7 @@
         
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
                 setTimeout(showDownarrow, 3000)
-                setTimeout(hideDownarrow, 5000)
+                setTimeout(hideDownarrow, 6000)
             }
         })
     </script>
@@ -194,8 +194,8 @@
     }
 
     #guide-arrow {
-        position: absolute;
-        bottom: 0.5rem;
+        position: fixed;
+        bottom: 10vh;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
