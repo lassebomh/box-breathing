@@ -239,9 +239,9 @@
 
     @keyframes breath-indicator-animation {
         0% { height: 0%; background-position: 100% 50%; }
-        25% { height: 100%; background-position: 0% 0%; }
+        25% { height: 0%; background-position: 100% 50%; }
         50% { height: 100%; background-position: 0% 0%; }
-        75% { height: 0%; background-position: 100% 50%; }
+        75% { height: 100%; background-position: 0% 0%; }
         100% { height: 0%; background-position: 100% 50%; }
     }
 
@@ -261,27 +261,27 @@
 
     @keyframes dot-animation {
         0% {
-            left: calc(0% + var(--box-border-width)/2);
+            left: calc(100% - var(--box-border-width)/2);
             top: calc(100% - var(--box-border-width)/2);
             background-position: 100% 50%;
         }
         25% {
             left: calc(0% + var(--box-border-width)/2);
-            top: calc(0% + var(--box-border-width)/2);
-            background-position: 0% 0%;
+            top: calc(100% - var(--box-border-width)/2);
+            background-position: 100% 50%;
         }
         50% {
-            left: calc(100% - var(--box-border-width)/2);
+            left: calc(0% + var(--box-border-width)/2);
             top: calc(0% + var(--box-border-width)/2);
             background-position: 0% 0%;
         }
         75% {
             left: calc(100% - var(--box-border-width)/2);
-            top: calc(100% - var(--box-border-width)/2);
-            background-position: 100% 50%;
+            top: calc(0% + var(--box-border-width)/2);
+            background-position: 0% 0%;
         }
         100% {
-            left: calc(0% + var(--box-border-width)/2);
+            left: calc(100% - var(--box-border-width)/2);
             top: calc(100% - var(--box-border-width)/2);
             background-position: 100% 50%;
         }
