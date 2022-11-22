@@ -80,9 +80,18 @@
         <p>
             This box breathing animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
         </p>
-        <p id="settings">
-            <p>Your total breaths: <span id="total-breaths"></span></p>
-        </p>
+        <div id="settings">
+            <div>
+                <label for="breath-goal">Breath goal</label>
+                <input type="number" name="breath-goal" min="0" value="0" id="breath-goal" />
+            </div>
+            <div>
+                Your total breaths: <span id="total-breaths"></span>
+            </div>
+            <div>
+                Your total breaths: <span id="total-breaths"></span>
+            </div>
+        </div>
         <h2>Guide for beginners</h2>
         <ol>
             <li>
@@ -222,9 +231,49 @@
     :root::-webkit-scrollbar { width: 0 }
     :root { scrollbar-width: none; }
 
+    input {
+        background-color: #222;
+        border-bottom: 1px solid #aaa;
+        border: 0;
+        padding: 8px;
+        color: white;
+        width: 60px; 
+    }
+    
     #visual {
         position: relative;
     }
+
+    #settings {
+        /* border: 1px solid #444; */
+        border-radius: 2px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 8px;
+        /* opacity: .50; */
+        /* transition: opacity 0.2s ease-in-out; */
+        font-size: 0.8em;
+        font-family: monospace;
+    }
+
+    #settings > div {
+        flex-grow: 1;
+        /* width: 100%; */
+        gap: 0.5em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #settings > div:not(:first-child) {
+        border-left: 1px solid #444;
+        /* height: 100%; */
+    }
+
+    /* #settings:hover {
+        opacity: 1;
+    } */
 
     #guide-arrow {
         position: fixed;
