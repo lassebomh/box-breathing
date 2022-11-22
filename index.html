@@ -9,23 +9,26 @@
     <link rel="icon" type="image/png" href="./icons/icon_64.png"/>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="./fonts/ibm-plex-sans-v14/font.css">
-    <title>Box Breathing Technique: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
-    <meta name="description" content="Box breathing Technique is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
+    <title>Box Breathing Animation: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
+    <meta name="description" content="Box breathing Animation is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
     <script>
-        window.addEventListener('load', async () => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('./sw.js')
+                .then((registration) => {
+                    registration.update()
+                })
+        };
+
+        window.addEventListener('load', () => {
+            
             const dot = document.getElementById('dot')
             const downarrow = document.getElementById("guide-arrow")
-            const totalBreaths = document.getElementById("total-breaths")
-    
-            let sessionBreathCount = 0
+            const audio = document.getElementById('audio-player')
 
-            if (isNaN(parseInt(localStorage.getItem('total_breaths')))) localStorage.setItem('total_breaths', 0)
-            
-            if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-        
             function hideDownarrow(event) {
                 downarrow.style.opacity = '0'
-                window.removeEventListener('scroll', hideDownarrow)
+                window.removeEventListener('scroll', hideDownarrow, { passive: true })
             }
         
             function showDownarrow(event) {
@@ -34,28 +37,32 @@
                 localStorage.setItem("arrow_shown", "true")
             }
             
-            function breathCounterLoop() {
-                if (window.scrollY / window.innerHeight < 0.25) {
-                    sessionBreathCount++
-                    localStorage.setItem('total_breaths', parseInt(localStorage.getItem('total_breaths')) + 1)
-                }
-                updateBreathCounter()
-                setTimeout(breathCounterLoop, 16000)
-            }
-            
-            function updateBreathCounter() {
-                dot.innerText = sessionBreathCount % 100
-                totalBreaths.innerText = localStorage.getItem('total_breaths')
-            }
-
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
                 setTimeout(showDownarrow, 3000)
                 setTimeout(hideDownarrow, 6000)
             }
-            
-            updateBreathCounter()
 
-            setTimeout(breathCounterLoop, 16000)
+            audio.addEventListener('play', () => {
+                localStorage.setItem('audio_autoplay', 'true')
+            })
+
+            audio.addEventListener('pause', () => {
+                localStorage.setItem('audio_autoplay', 'false')
+            })
+
+            audio.addEventListener('volumechange', () => {
+                localStorage.setItem('audio_volume', audio.volume)
+            })
+            
+            if (localStorage.getItem('audio_volume') == null) {
+                localStorage.setItem('audio_volume', 1)
+            } else {
+                audio.volume = parseFloat(localStorage.getItem('audio_volume'))
+            }
+
+            if (localStorage.getItem('audio_autoplay') == 'true') {
+                audio.play().catch(() => {})
+            }
         })
     </script>
 </head>
@@ -81,17 +88,20 @@
             This box breathing animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
         </p>
         <div id="settings">
-            <div>
-                <label for="breath-goal">Breath goal</label>
-                <input type="number" name="breath-goal" min="0" value="0" id="breath-goal" />
-            </div>
-            <div>
-                Your total breaths: <span id="total-breaths"></span>
-            </div>
-            <div>
-                Your total breaths: <span id="total-breaths"></span>
-            </div>
+            <audio id="audio-player" loop controls>
+                <source src="./relax_10m.ogg">
+            </audio>
         </div>
+        
+        <p>
+            I made this site as a programming exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The code is fully open source and can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
+        </p>
+        <p>
+            You can buy me a coffee if you found it useful and want to show your appreciation :)
+        </p>
+        <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
+            <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
+        </a>
         <h2>Guide for beginners</h2>
         <ol>
             <li>
@@ -108,7 +118,7 @@
             </li>
         </ol>
         <p>
-            Now breathe in the following pattern:
+            Now breathe in the following pattern, while remembering to breathe in through your nose, and out through your mouth:
             <ul>
                 <li>Breathe in (4s)</li>
                 <li>Hold (4s)</li>
@@ -117,7 +127,7 @@
             </ul>
         </p>
         <p>
-            The blue color represents how filled your lungs should be. Sometimes beginners feel out of breath when Box breathing, and this is completely normal. This will pass as long as you're relaxed and you improve your technique, so don't worry about being a little too early/late to remain comfortable.
+            <b>Sometimes beginners feel out of breath when Box breathing, and this is completely normal.</b> This will pass as long as you're relaxed and you improve your technique, so don't worry about being a little too early or late in the cycle to remain comfortable.
         </p>
         <p>
             Some of this information comes from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">this Cleveland Clinic article</a>.
@@ -146,12 +156,6 @@
         <p>
             If you're on Chrome Desktop you can press the button to the left of the bookmark button in the url bar.
         </p>
-        <p>
-            I made this site as a CSS exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The source code can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>. You can buy me a coffee if you found it useful and want to show your appreciation :)
-        </p>
-        <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
-            <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
-        </a>
     </div>
 </body>
 <style>
@@ -237,7 +241,8 @@
         border: 0;
         padding: 8px;
         color: white;
-        width: 60px; 
+        width: 60px;
+        appearance: textfield;
     }
     
     #visual {
@@ -269,6 +274,10 @@
     #settings > div:not(:first-child) {
         border-left: 1px solid #444;
         /* height: 100%; */
+    }
+
+    #audio-player {
+        width: 100%;
     }
 
     /* #settings:hover {
@@ -392,9 +401,28 @@
     }
 
     #buymeacoffee img {
-        height: 60px;
-        width: 217px;
+        height: 50px;
+        /* width: 217px; */
     }
+
+    /* 
+    audio::-webkit-media-controls-timeline-container
+    audio::-webkit-media-controls-timeline
+    
+    audio::-webkit-media-controls-panel
+    audio::-webkit-media-controls-mute-button
+    audio::-webkit-media-controls-play-button
+    audio::-webkit-media-controls-current-time-display
+    audio::-webkit-media-controls-time-remaining-display
+    audio::-webkit-media-controls-volume-slider-container
+    audio::-webkit-media-controls-volume-slider
+    audio::-webkit-media-controls-seek-back-button
+    audio::-webkit-media-controls-seek-forward-button
+    audio::-webkit-media-controls-fullscreen-button
+    audio::-webkit-media-controls-rewind-button
+    audio::-webkit-media-controls-return-to-realtime-button
+    audio::-webkit-media-controls-toggle-closed-captions-button
+    */
 
 </style>
 </html>
