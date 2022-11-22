@@ -1,5 +1,5 @@
 
-const MAIN_CACHE = 'main';
+const MAIN_CACHE = 'main2';
 
 const cacheFirst = (event) => {
 
