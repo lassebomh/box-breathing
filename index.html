@@ -13,10 +13,15 @@
     <meta name="description" content="Box breathing Technique is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
     <script>
         window.addEventListener('load', async () => {
+            const dot = document.getElementById('dot')
+            const downarrow = document.getElementById("guide-arrow")
+            const totalBreaths = document.getElementById("total-breaths")
+    
+            let sessionBreathCount = 0
+
+            if (isNaN(parseInt(localStorage.getItem('total_breaths')))) localStorage.setItem('total_breaths', 0)
             
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-        
-            const downarrow = document.getElementById("guide-arrow")
         
             function hideDownarrow(event) {
                 downarrow.style.opacity = '0'
@@ -28,11 +33,29 @@
                 window.addEventListener('scroll', hideDownarrow)
                 localStorage.setItem("arrow_shown", "true")
             }
-        
+            
+            function breathCounterLoop() {
+                if (window.scrollY / window.innerHeight < 0.25) {
+                    sessionBreathCount++
+                    localStorage.setItem('total_breaths', parseInt(localStorage.getItem('total_breaths')) + 1)
+                }
+                updateBreathCounter()
+                setTimeout(breathCounterLoop, 16000)
+            }
+            
+            function updateBreathCounter() {
+                dot.innerText = sessionBreathCount % 100
+                totalBreaths.innerText = localStorage.getItem('total_breaths')
+            }
+
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
                 setTimeout(showDownarrow, 3000)
                 setTimeout(hideDownarrow, 6000)
             }
+            
+            updateBreathCounter()
+
+            setTimeout(breathCounterLoop, 16000)
         })
     </script>
 </head>
@@ -56,6 +79,9 @@
         <h1>Box Breathing Technique <span>A visual animation to help with calmness, mindfulness, stress and anxiety.</span></h1>
         <p>
             This box breathing animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+        </p>
+        <p id="settings">
+            <p>Your total breaths: <span id="total-breaths"></span></p>
         </p>
         <h2>Guide for beginners</h2>
         <ol>
@@ -262,6 +288,15 @@
         background: #131313;
         animation: dot-animation var(--animation-options);
         
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.7em;
+
+        font-family: monospace;
+        font-weight: 800;
+        color: #ffff;
+
         left: calc(0% + var(--box-border-width)/2);
         top: calc(100% - var(--box-border-width)/2);
     }
