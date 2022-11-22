@@ -23,23 +23,23 @@
         window.addEventListener('load', () => {
             
             const dot = document.getElementById('dot')
-            const downarrow = document.getElementById("guide-arrow")
+            const guideArrow = document.getElementById("guide-arrow")
             const audio = document.getElementById('audio-player')
 
-            function hideDownarrow(event) {
-                downarrow.style.opacity = '0'
-                window.removeEventListener('scroll', hideDownarrow, { passive: true })
+            function hideGuideArrow(event) {
+                guideArrow.style.opacity = '0'
+                window.removeEventListener('scroll', hideGuideArrow, { passive: true })
             }
         
-            function showDownarrow(event) {
-                downarrow.style.opacity = '1'
-                window.addEventListener('scroll', hideDownarrow)
+            function showGuideArrow(event) {
+                guideArrow.style.opacity = '1'
+                window.addEventListener('scroll', hideGuideArrow)
                 localStorage.setItem("arrow_shown", "true")
             }
             
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
-                setTimeout(showDownarrow, 3000)
-                setTimeout(hideDownarrow, 6000)
+                setTimeout(showGuideArrow, 3000)
+                setTimeout(hideGuideArrow, 6000)
             }
 
             audio.addEventListener('play', () => {
@@ -87,21 +87,22 @@
         <p>
             This box breathing animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
         </p>
-        <div id="settings">
-            <audio id="audio-player" loop controls>
-                <source src="./relax_10m.ogg">
-            </audio>
+        <div id="badge-buttons">
+            <div id="audio-container">
+                <audio id="audio-player" loop controls controlslist="noplaybackrate">
+                    <source src="./relax_10m.ogg">
+                </audio>
+            </div>
+            <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
+                <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
+            </a>
         </div>
-        
         <p>
             I made this site as a programming exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The code is fully open source and can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
         </p>
         <p>
             You can buy me a coffee if you found it useful and want to show your appreciation :)
         </p>
-        <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
-            <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
-        </a>
         <h2>Guide for beginners</h2>
         <ol>
             <li>
@@ -180,6 +181,7 @@
 
 
         font-size: calc(min(18px, 5vmin));
+
     }
 
     h1 {
@@ -249,44 +251,9 @@
         position: relative;
     }
 
-    #settings {
-        /* border: 1px solid #444; */
-        border-radius: 2px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 8px;
-        /* opacity: .50; */
-        /* transition: opacity 0.2s ease-in-out; */
-        font-size: 0.8em;
-        font-family: monospace;
-    }
-
-    #settings > div {
-        flex-grow: 1;
-        /* width: 100%; */
-        gap: 0.5em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #settings > div:not(:first-child) {
-        border-left: 1px solid #444;
-        /* height: 100%; */
-    }
-
-    #audio-player {
-        width: 100%;
-    }
-
-    /* #settings:hover {
-        opacity: 1;
-    } */
-
     #guide-arrow {
         position: fixed;
-        bottom: 10vh;
+        bottom: 6vh;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
@@ -389,40 +356,78 @@
 
     #content {
         width: 90vmin;
+        max-width: 45em;
         /* padding: 3rem 0; */
         margin: auto;
         padding: 1em 0;
         margin-bottom: 1em;
     }
 
+    #badge-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1em;
+        margin: 2em 0;
+        height: 54px;
+    }
+
     #buymeacoffee {
-        text-align: center;
-        display: block;
+        display: contents;
     }
 
     #buymeacoffee img {
-        height: 50px;
-        /* width: 217px; */
+        height: 54px;
+        background-color: #ffdd00;
+        border-radius: 1000px;
     }
 
-    /* 
-    audio::-webkit-media-controls-timeline-container
-    audio::-webkit-media-controls-timeline
+    #audio-container {
+        width: 100%;
+        height: 54px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 8px;
+    }
+
+    #audio-player {
+        width: 100%;
+    }
+
+    @-moz-document url-prefix() {
+
+        #audio-container {
+            background-color: #1a1a1a;
+            border-radius: 1000px;
+        }
+    }
+
+    audio::-webkit-media-controls {
+        filter: invert(1);
+    }
+
+    audio::-webkit-media-controls-panel {
+        background-color: #e3e3e3;
+        justify-content: space-between;
+    }
     
-    audio::-webkit-media-controls-panel
-    audio::-webkit-media-controls-mute-button
-    audio::-webkit-media-controls-play-button
-    audio::-webkit-media-controls-current-time-display
-    audio::-webkit-media-controls-time-remaining-display
-    audio::-webkit-media-controls-volume-slider-container
-    audio::-webkit-media-controls-volume-slider
-    audio::-webkit-media-controls-seek-back-button
-    audio::-webkit-media-controls-seek-forward-button
-    audio::-webkit-media-controls-fullscreen-button
-    audio::-webkit-media-controls-rewind-button
-    audio::-webkit-media-controls-return-to-realtime-button
-    audio::-webkit-media-controls-toggle-closed-captions-button
-    */
+    @media screen and (max-width:480px) {
+        audio::-webkit-media-controls-timeline-container,
+        audio::-webkit-media-controls-timeline
+        {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width:580px) {
+        audio::-webkit-media-controls-time-remaining-display,
+        audio::-webkit-media-controls-current-time-display
+        {
+            display: none;
+        }
+    }
+
 
 </style>
 </html>
