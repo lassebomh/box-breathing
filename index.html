@@ -9,29 +9,59 @@
     <link rel="icon" type="image/png" href="./icons/icon_64.png"/>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="./fonts/ibm-plex-sans-v14/font.css">
-    <title>Box Breathing Technique: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
-    <meta name="description" content="Box breathing Technique is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
+    <title>Box Breathing Animation: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
+    <meta name="description" content="Box breathing Animation is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
     <script>
-        window.addEventListener('load', async () => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('./sw.js')
+                .then((registration) => {
+                    registration.update()
+                })
+        };
+
+        window.addEventListener('load', () => {
             
-            if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-        
-            const downarrow = document.getElementById("guide-arrow")
-        
-            function hideDownarrow(event) {
-                downarrow.style.opacity = '0'
-                window.removeEventListener('scroll', hideDownarrow)
+            const dot = document.getElementById('dot')
+            const guideArrow = document.getElementById("guide-arrow")
+            const audio = document.getElementById('audio-player')
+
+            function hideGuideArrow(event) {
+                guideArrow.style.opacity = '0'
+                window.removeEventListener('scroll', hideGuideArrow, { passive: true })
             }
         
-            function showDownarrow(event) {
-                downarrow.style.opacity = '1'
-                window.addEventListener('scroll', hideDownarrow)
+            function showGuideArrow(event) {
+                guideArrow.style.opacity = '1'
+                window.addEventListener('scroll', hideGuideArrow)
                 localStorage.setItem("arrow_shown", "true")
             }
-        
+            
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
-                setTimeout(showDownarrow, 3000)
-                setTimeout(hideDownarrow, 6000)
+                setTimeout(showGuideArrow, 3000)
+                setTimeout(hideGuideArrow, 6000)
+            }
+
+            audio.addEventListener('play', () => {
+                localStorage.setItem('audio_autoplay', 'true')
+            })
+
+            audio.addEventListener('pause', () => {
+                localStorage.setItem('audio_autoplay', 'false')
+            })
+
+            audio.addEventListener('volumechange', () => {
+                localStorage.setItem('audio_volume', audio.volume)
+            })
+            
+            if (localStorage.getItem('audio_volume') == null) {
+                localStorage.setItem('audio_volume', 1)
+            } else {
+                audio.volume = parseFloat(localStorage.getItem('audio_volume'))
+            }
+
+            if (localStorage.getItem('audio_autoplay') == 'true') {
+                audio.play().catch(() => {})
             }
         })
     </script>
@@ -53,14 +83,35 @@
         </div>
     </div>
     <div id="content">
-        <h1>Box Breathing Technique <span>A visual animation to help with calmness, mindfulness, stress and anxiety.</span></h1>
+        <h1>Box Breathing Animation <span>An animated guide to help with calmness, mindfulness, stress and anxiety.</span></h1>
         <p>
-            This box breathing animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+            This animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+        </p>
+        <p>
+            <div id="badge-buttons">
+                <div id="audio-container">
+                    <audio id="audio-player" loop controls controlslist="noplaybackrate">
+                        <source src="./relax_10m.ogg">
+                    </audio>
+                </div>
+                <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
+                    <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
+                </a>
+            </div>
+            <div id="badge-subtext">
+                This is some calming music you can listen to while box breathing. It was made for this site, and you are free to download it and use it for anything you'd like without giving credit.
+            </div>
+        </p>
+        <p>
+            I made this site as a programming exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The code is fully open source and can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
+        </p>
+        <p>
+            If you found it useful and want to show your appreciation then you are very welcome to buy me a coffee :)
         </p>
         <h2>Guide for beginners</h2>
         <ol>
             <li>
-                Sit comfortably, with a straight back and relax your shoulders, head and neck.
+                Sit with a straight back and relax.
             </li>
             <li>
                 Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.
@@ -73,7 +124,7 @@
             </li>
         </ol>
         <p>
-            Now breathe in the following pattern:
+            Now breathe in the following pattern, while remembering to breathe in through your nose, and out through your mouth:
             <ul>
                 <li>Breathe in (4s)</li>
                 <li>Hold (4s)</li>
@@ -82,7 +133,7 @@
             </ul>
         </p>
         <p>
-            The blue color represents how filled your lungs should be. Sometimes beginners feel out of breath when Box breathing, and this is completely normal. This will pass as long as you're relaxed and you improve your technique, so don't worry about being a little too early/late to remain comfortable.
+            <b>Sometimes beginners feel out of breath when Box breathing, and this is completely normal.</b> This will pass as when your technique gets better, so don't worry about being a little too early or late in the cycle to remain comfortable.
         </p>
         <p>
             Some of this information comes from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">this Cleveland Clinic article</a>.
@@ -92,31 +143,21 @@
             This site works offline if you install it. These steps are for mobile.
         </p>
         <p>
-            On Safari:
+            On iPhone:
             <ol>
+                <li>Open this site in Safari</li>
                 <li>Press the share button</li>
                 <li>Press "Add to Home Screen"</li>
             </ol>
-            On Chrome:
+            On Android:
             <ol>
                 <li>Press on the triple-dot icon</li>
-                <li>Press "Install app"</li>
-            </ol>
-            On Firefox:
-            <ol>
-                <li>Press on the triple-dot icon</li>
-                <li>Press "Add to Home Screen"</li>
+                <li>Press "Install app" in Chrome or "Add to Home Screen" in FireFox </li>
             </ol>
         </p>
         <p>
             If you're on Chrome Desktop you can press the button to the left of the bookmark button in the url bar.
         </p>
-        <p>
-            I made this site as a CSS exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The source code can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>. You can buy me a coffee if you found it useful and want to show your appreciation :)
-        </p>
-        <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
-            <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
-        </a>
     </div>
 </body>
 <style>
@@ -141,6 +182,7 @@
 
 
         font-size: calc(min(18px, 5vmin));
+
     }
 
     h1 {
@@ -196,13 +238,23 @@
     :root::-webkit-scrollbar { width: 0 }
     :root { scrollbar-width: none; }
 
+    input {
+        background-color: #222;
+        border-bottom: 1px solid #aaa;
+        border: 0;
+        padding: 8px;
+        color: white;
+        width: 60px;
+        appearance: textfield;
+    }
+    
     #visual {
         position: relative;
     }
 
     #guide-arrow {
         position: fixed;
-        bottom: 10vh;
+        bottom: 6vh;
         left: 50%;
         transform: translate(-50%, -50%);
         opacity: 0;
@@ -262,6 +314,15 @@
         background: #131313;
         animation: dot-animation var(--animation-options);
         
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.7em;
+
+        font-family: monospace;
+        font-weight: 800;
+        color: #ffff;
+
         left: calc(0% + var(--box-border-width)/2);
         top: calc(100% - var(--box-border-width)/2);
     }
@@ -296,21 +357,87 @@
 
     #content {
         width: 90vmin;
+        max-width: 45em;
         /* padding: 3rem 0; */
         margin: auto;
         padding: 1em 0;
         margin-bottom: 1em;
     }
 
+    #badge-buttons > p {
+        margin: 1.1em 0;
+    }
+
+    #badge-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1em;
+        height: 54px;
+    }
+
+    #badge-subtext {
+        /* margin-left: 0.5em; */
+        margin-top: 0.7em;
+        font-size: 0.8em;
+        color: #999;
+    }
+
     #buymeacoffee {
-        text-align: center;
-        display: block;
+        display: contents;
     }
 
     #buymeacoffee img {
-        height: 60px;
-        width: 217px;
+        height: 54px;
+        background-color: #ffdd00;
+        border-radius: 1000px;
     }
+
+    #audio-container {
+        width: 100%;
+        height: 54px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #audio-player {
+        width: 100%;
+    }
+
+    @-moz-document url-prefix() {
+        #audio-container {
+            background-color: #1a1a1a;
+            border-radius: 1000px;
+            padding: 0 8px;
+        }
+    }
+
+    audio::-webkit-media-controls {
+        filter: invert(1);
+    }
+
+    audio::-webkit-media-controls-panel {
+        background-color: #e3e3e3;
+        justify-content: space-between;
+    }
+    
+    @media screen and (max-width:480px) {
+        audio::-webkit-media-controls-timeline-container,
+        audio::-webkit-media-controls-timeline
+        {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width:580px) {
+        audio::-webkit-media-controls-time-remaining-display,
+        audio::-webkit-media-controls-current-time-display
+        {
+            display: none;
+        }
+    }
+
 
 </style>
 </html>
