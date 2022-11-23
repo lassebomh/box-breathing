@@ -1,8 +1,14 @@
 
-const MAIN_CACHE = 'main2';
+const MAIN_CACHE = 'main';
 
+self.addEventListener("install", async (event) => {
+    event.waitUntil((async () => {
+        const cacheKeys = await caches.keys()
+        await Promise.all(cacheKeys.map(name => caches.delete(name)))
+    })())
+});
+  
 const cacheFirst = (event) => {
-
     const referrerOrigin = event.request.referrer && new URL(event.request.referrer).origin
     const requestOrigin = event.request.url && new URL(event.request.url).origin
 
