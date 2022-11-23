@@ -21,7 +21,7 @@ const cacheFirst = (event) => {
         const cache = await caches.open(MAIN_CACHE)
 
         const responsePromise = fetch(event.request).then((response) => {
-            cache.put(event.request, response.clone())
+            if (response.ok) cache.put(event.request, response.clone())
             return response
         })
 
