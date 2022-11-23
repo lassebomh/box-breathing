@@ -5,17 +5,20 @@ self.addEventListener("install", async (event) => {
     event.waitUntil((async () => {
         const cacheKeys = await caches.keys()
         await Promise.all(cacheKeys.map(name => caches.delete(name)))
+
+        const cache = await caches.open(MAIN_CACHE)
+        await cache.addAll(['.'])
     })())
 });
   
 const cacheFirst = (event) => {
-    const referrerOrigin = event.request.referrer && new URL(event.request.referrer).origin
-    const requestOrigin = event.request.url && new URL(event.request.url).origin
 
     if (event.request.method.toLowerCase() != 'get') return
     if (event.request.headers.get('Range') != null) return
-
-    if (referrerOrigin != requestOrigin) return
+    
+    const requestUrl = new URL(event.request.url)
+    
+    if (requestUrl.protocol != 'http:' && requestUrl.protocol != 'https:') return;
 
     event.respondWith((async ()=>{
         const cache = await caches.open(MAIN_CACHE)
