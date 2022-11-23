@@ -83,30 +83,35 @@
         </div>
     </div>
     <div id="content">
-        <h1>Box Breathing Technique <span>A visual animation to help with calmness, mindfulness, stress and anxiety.</span></h1>
+        <h1>Box Breathing Animation <span>An animated guide to help with calmness, mindfulness, stress and anxiety.</span></h1>
         <p>
-            This box breathing animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+            This animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
         </p>
-        <div id="badge-buttons">
-            <div id="audio-container">
-                <audio id="audio-player" loop controls controlslist="noplaybackrate">
-                    <source src="./relax_10m.ogg">
-                </audio>
+        <p>
+            <div id="badge-buttons">
+                <div id="audio-container">
+                    <audio id="audio-player" loop controls controlslist="noplaybackrate">
+                        <source src="./relax_10m.ogg">
+                    </audio>
+                </div>
+                <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
+                    <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
+                </a>
             </div>
-            <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
-                <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
-            </a>
-        </div>
+            <div id="badge-subtext">
+                This is some calming music you can listen to while box breathing. It was made for this site, and you are free to download it and use it for anything you'd like without giving credit.
+            </div>
+        </p>
         <p>
             I made this site as a programming exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The code is fully open source and can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
         </p>
         <p>
-            You can buy me a coffee if you found it useful and want to show your appreciation :)
+            If you found it useful and want to show your appreciation then you are very welcome to buy me a coffee :)
         </p>
         <h2>Guide for beginners</h2>
         <ol>
             <li>
-                Sit comfortably, with a straight back and relax your shoulders, head and neck.
+                Sit with a straight back and relax.
             </li>
             <li>
                 Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.
@@ -128,7 +133,7 @@
             </ul>
         </p>
         <p>
-            <b>Sometimes beginners feel out of breath when Box breathing, and this is completely normal.</b> This will pass as long as you're relaxed and you improve your technique, so don't worry about being a little too early or late in the cycle to remain comfortable.
+            <b>Sometimes beginners feel out of breath when Box breathing, and this is completely normal.</b> This will pass as when your technique gets better, so don't worry about being a little too early or late in the cycle to remain comfortable.
         </p>
         <p>
             Some of this information comes from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">this Cleveland Clinic article</a>.
@@ -138,20 +143,16 @@
             This site works offline if you install it. These steps are for mobile.
         </p>
         <p>
-            On Safari:
+            On iPhone:
             <ol>
+                <li>Open this site in Safari</li>
                 <li>Press the share button</li>
                 <li>Press "Add to Home Screen"</li>
             </ol>
-            On Chrome:
+            On Android:
             <ol>
                 <li>Press on the triple-dot icon</li>
-                <li>Press "Install app"</li>
-            </ol>
-            On Firefox:
-            <ol>
-                <li>Press on the triple-dot icon</li>
-                <li>Press "Add to Home Screen"</li>
+                <li>Press "Install app" in Chrome or "Add to Home Screen" in FireFox </li>
             </ol>
         </p>
         <p>
@@ -368,8 +369,14 @@
         justify-content: space-between;
         align-items: center;
         gap: 1em;
-        margin: 2em 0;
         height: 54px;
+    }
+
+    #badge-subtext {
+        /* margin-left: 0.5em; */
+        margin-top: 0.7em;
+        font-size: 0.8em;
+        color: #999;
     }
 
     #buymeacoffee {
@@ -388,7 +395,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 8px;
     }
 
     #audio-player {
@@ -396,10 +402,10 @@
     }
 
     @-moz-document url-prefix() {
-
         #audio-container {
             background-color: #1a1a1a;
             border-radius: 1000px;
+            padding: 0 8px;
         }
     }
 
