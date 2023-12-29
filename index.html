@@ -9,8 +9,22 @@
     <link rel="icon" type="image/png" href="./icons/icon_64.png"/>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="./fonts/ibm-plex-sans-v14/font.css">
-    <title>Box Breathing Animation: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
-    <meta name="description" content="Box breathing Animation is an animation (not a gif or simple diagram) that visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
+    <title>Box Breathing Video: A visual animation to help with calmness, mindfulness, stress and anxiety</title>
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": " Visual guide to Box Breathing - 10 Minute Meditation",
+        "description": "This is a box breathing animation I made, as a programming exercise. Box breathing has been used by Navy SEALs to remain calm and focused in high-stress situations. The benefits of incorporating box breathing into your routine can include reduced stress and anxiety, improved concentration, and a sense of calm.",
+        "thumbnailUrl": [
+            "https://lassebomh.github.io/box-breathing/thumbnail.png"
+        ],
+        "uploadDate": "2023-12-29T03:00:00+01:00",
+        "duration": "PT10M8S",
+        "embedUrl": "https://www.youtube.com/embed/bphe8KhcGQY?si=HrJ2kARrZ-XmO8U5"
+        }
+    </script>
+    <meta name="description" content="Box Breathing Video is an animated visualization (not a GIF video or simple diagram) that guides you in the diaphragmatic breathing technique. It is also known as square breathing and can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation.">
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker
@@ -21,25 +35,165 @@
         };
 
         window.addEventListener('load', () => {
+
+            var startTime = Date.now();
             
             const dot = document.getElementById('dot')
             const guideArrow = document.getElementById("guide-arrow")
             const audio = document.getElementById('audio-player')
 
+            const toggleGuideText = document.querySelector('#toggle-guide-text-setting > input')
+            const toggleSessionTime = document.querySelector('#toggle-session-time-setting > input')
+
+            const guideTextContainer = document.getElementById('guide-text')
+            const sessionTime = document.getElementById('session-time')
+            const sessionTimeExtra = document.getElementById('session-time-extra')
+
+            const boxSizeInput = document.querySelector("#box-size-setting .incrementer-value")
+
+            window.shiftBoxSize = (x) => {
+                let size = Math.round((parseFloat(localStorage.getItem("box_size") || "1") + x) * 100);
+                size = Math.min(300, Math.max(40, size))
+
+                localStorage.setItem("box_size", size / 100)
+                boxSizeInput.textContent = size + '%';
+
+                document.body.style.setProperty('--box-size-width', size / 100);
+            }
+
+            shiftBoxSize(0)
+
+            const revealSessionTimeInput = document.querySelector("#reveal-timer-setting .incrementer-value")
+
+            function getSessionTimeDelay() {
+                return Math.round(parseFloat(localStorage.getItem("reveal_session_time_after") || "0"));
+            }
+            let sessionRevealTimeout;
+
+            window.shiftRevealSessionTime = (x) => {
+                console.log(x);
+                let minutes = Math.round(getSessionTimeDelay() + x);
+                minutes = Math.max(0, minutes)
+
+                localStorage.setItem("reveal_session_time_after", minutes)
+
+                if (minutes > 0) {
+                    toggleSessionTime.checked = true;
+                    localStorage.setItem("show_session_time", true)
+                    refreshSessionVisibility(minutes);
+                }
+
+                revealSessionTimeInput.textContent = minutes + 'm';
+
+                return minutes
+            }
+
+            shiftRevealSessionTime(0)
+
+
+            function refreshGuideVisibility() {
+                let enabled = localStorage.getItem("show_guide_text") !== "false";
+                guideTextContainer.style.opacity = enabled ? '1' : '0';
+
+                return enabled;
+            }
+
+            toggleGuideText.addEventListener('change', (e) => {
+                let enabled = toggleGuideText.checked;
+                localStorage.setItem("show_guide_text", enabled)
+                refreshGuideVisibility()
+            })
+
+            toggleGuideText.checked = refreshGuideVisibility();
+
+            function refreshSessionVisibility(delay) {
+                if (sessionRevealTimeout) clearTimeout(sessionRevealTimeout)
+                    sessionTime.style.transitionProperty = "initial";
+                    sessionTime.style.transitionDuration = "initial";
+
+                let enabled = localStorage.getItem("show_session_time") == "true";
+
+                if (enabled) {
+                    if (delay > 0) {
+                        sessionTime.style.opacity = '0';
+                        sessionTime.style.transitionProperty = "opacity";
+                        sessionTime.style.transitionDuration = "0.5s";
+
+                        sessionRevealTimeout = setTimeout(() => {
+                            sessionTime.style.opacity = '1';
+                        }, 60000 * delay)
+                    } else {
+                        sessionTime.style.opacity = '1';
+                    }
+
+                } else {
+                    shiftRevealSessionTime(-99999999)
+                    sessionTime.style.opacity = '0';
+
+                }
+
+                return enabled;
+            }
+
+            toggleSessionTime.addEventListener('change', (e) => {
+                let enabled = toggleSessionTime.checked;
+                localStorage.setItem("show_session_time", enabled)
+                refreshSessionVisibility(getSessionTimeDelay())
+            })
+
+            toggleSessionTime.checked = refreshSessionVisibility(getSessionTimeDelay());
+
+
+            function pad(number) {
+                return number < 10 ? '0' + number : number;
+            }
+
+            function updateTimer() {
+                var elapsedTime = Date.now() - startTime;
+                
+                var hours = Math.floor(elapsedTime / 3600000);
+                elapsedTime %= 3600000;
+                
+                var minutes = Math.floor(elapsedTime / 60000);
+                elapsedTime %= 60000;
+                
+                var seconds = Math.floor(elapsedTime / 1000);
+
+                var timerStr = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+                sessionTime.textContent = timerStr;
+                sessionTimeExtra.textContent = "(" + timerStr + ")"
+
+            }
+
+            updateTimer()
+            setInterval(updateTimer, 1000);
+
+
             function hideGuideArrow(event) {
                 guideArrow.style.opacity = '0'
                 window.removeEventListener('scroll', hideGuideArrow, { passive: true })
+
             }
         
             function showGuideArrow(event) {
                 guideArrow.style.opacity = '1'
                 window.addEventListener('scroll', hideGuideArrow)
                 localStorage.setItem("arrow_shown", "true")
+
+                toggleGuideText.checked = false;
+                localStorage.setItem("show_guide_text", false)
+                refreshGuideVisibility(true)
+
             }
             
             if (window.scrollY == 0 && localStorage.getItem("arrow_shown") != 'true') {
-                setTimeout(showGuideArrow, 3000)
-                setTimeout(hideGuideArrow, 6000)
+                
+                toggleGuideText.checked = true;
+                localStorage.setItem("show_guide_text", true)
+                refreshGuideVisibility(true)
+
+                setTimeout(showGuideArrow, 16000)
+                setTimeout(hideGuideArrow, 20000)
             }
 
             audio.addEventListener('play', () => {
@@ -66,27 +220,592 @@
         })
     </script>
 </head>
-<body>
+<body style="--box-size-width: 1;">
+
+    <style>
+        body {
+            --bg-color: #131313;
+            --box-size-width: 1;
+
+            --animation-time: 16s;
+            --animation-options: var(--animation-time) infinite cubic-bezier(0.2, 0, 0.8, 1);
+
+            --dot-size: 1.2rem;
+            --box-border-width: 2px;
+            --box-border-color: white;
+            --box-side-length: calc(min(50vmin, 250px) * var(--box-size-width));
+            --box-fill-color-transition: #003794;
+            --box-fill-color: #006ed4;
+
+            --breath-gradient: linear-gradient(
+                135deg,
+                var(--box-fill-color) 0%,
+                var(--box-fill-color-transition) 30%,
+                var(--bg-color) 75%
+            );
+
+
+            font-size: calc(min(18px, 5vmin));
+
+        }
+
+
+        h1 summary {
+            list-style-type: none;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            font-weight: 300;
+            color: #999;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+
+        h1 + h2 {
+            font-weight: 500;
+            color: #fff;
+            font-size: 2em;
+            margin-top: 0em;
+            margin-bottom: 0em;
+            line-height: 1.2em;
+        }
+
+        h1 + h2 ~ p {
+            font-size: 0.9em;
+            margin-bottom: 2em;
+        }
+
+        h1 > span::before {
+            content:"\a";
+            white-space: pre;
+        }
+
+        hr {
+            border: none;
+            margin: 2em 0;
+            border-bottom: 1px solid #444;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ccc;
+            font-family: 'IBM Plex Sans', sans-serif;
+            margin: 0;
+            line-height: 1.5em;
+        }
+
+        blockquote {
+            border-left: 2px solid #444;
+            color: #888;
+            margin-left: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin: 0.25em 0;
+        }
+
+        a:visited {
+            color: #a748ff;
+        }
+
+        a {
+            color: #5871ff;
+        }
+
+        :root::-webkit-scrollbar { width: 0 }
+        :root { scrollbar-width: none; }
+
+        input {
+            background-color: #222;
+            border-bottom: 1px solid #aaa;
+            border: 0;
+            padding: 8px;
+            color: white;
+            width: 60px;
+            appearance: textfield;
+        }
+        
+        #visual {
+            position: relative;
+        }
+
+        #settings {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6em;
+        }
+
+        .setting {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            gap: 0.8em;
+            color: #bbb;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #212121;
+            -webkit-transition: .2s;
+            transition: .2s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .2s;
+            transition: .2s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: #2196F3; }
+        input:focus + .slider { box-shadow: 0 0 1px #2196F3; }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(20px);
+            -ms-transform: translateX(20px);
+            transform: translateX(20px);
+        }
+
+
+        #table-of-contents {
+            font-size: 1.2em;
+            color: white;
+            padding: 1em;
+            border: 1px solid #444;
+            border-radius: 0.5em;
+        }
+
+        #table-of-contents a {
+            text-decoration: none;
+        }
+
+        #table-of-contents > * {
+            margin: 0;
+        }
+
+        #guide-arrow {
+            position: absolute;
+            bottom: 6vh;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.5s linear;
+            fill: #888;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        #session-time {
+            position: absolute;
+            top: 4vh;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            color: #7e7e7e;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        #box-breathing-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+
+            border-bottom: 1px solid #444;
+        }
+
+        #box-container {
+            position: relative;
+        }
+        
+        #box {
+            width: var(--box-side-length);
+            height: var(--box-side-length);
+            border: var(--box-border-width) solid var(--box-border-color);
+        }
+        
+        #breath-indicator {
+            background: var(--breath-gradient);
+            background-size: 700% 700%;
+            width: 100%;
+            position: absolute;
+            box-sizing: border-box;
+            bottom: 0;
+            border-top: var(--box-border-width) solid var(--box-border-color);
+            z-index: -1;
+
+            animation: breath-indicator-animation var(--animation-options);
+        }
+
+        @keyframes breath-indicator-animation {
+            0% { height: 0%; background-position: 100% 50%; }
+            25% { height: 0%; background-position: 100% 50%; }
+            50% { height: 100%; background-position: 0% 0%; }
+            75% { height: 100%; background-position: 0% 0%; }
+            100% { height: 0%; background-position: 100% 50%; }
+        }
+
+        #dot {
+            width: var(--dot-size);
+            height: var(--dot-size);
+            position: absolute;
+            transform: translate(-50%, -50%);
+            border: var(--box-border-width) solid var(--box-border-color);
+            border-radius: 400rem;
+            background: #131313;
+            animation: dot-animation var(--animation-options);
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7em;
+
+            font-family: monospace;
+            font-weight: 800;
+            color: #ffff;
+
+            left: calc(0% + var(--box-border-width)/2);
+            top: calc(100% - var(--box-border-width)/2);
+        }
+
+        #guide-text {
+            position: absolute;
+            box-sizing: border-box;
+            inset: 0%;
+            display: grid;
+            opacity: 0;
+        }
+
+        #guide-text * {
+            grid-column: 1;
+            grid-row: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        #breathe-in { animation: breathe-in var(--animation-options); }
+
+        @keyframes breathe-in {
+            25% { opacity: 0; }
+            27.5% { opacity: 1; }
+            42.5% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        #breathe-out { animation: breathe-out var(--animation-options); }
+
+        @keyframes breathe-out {
+            0% { opacity: 0; }
+            75% { opacity: 0; }
+            77.5% { opacity: 1; }
+            92.5% { opacity: 1; }
+        }
+
+
+        #hold { animation: hold var(--animation-options); }
+        
+        @keyframes hold {
+            0% { opacity: 0; }
+            2.5% { opacity: 1; }
+            17.5% { opacity: 1; }
+            25% { opacity: 0; }
+            50% { opacity: 0; }
+            52.5% { opacity: 1; }
+            67.5% { opacity: 1; }
+            75% { opacity: 0; }
+        }
+
+        
+
+
+
+        @keyframes dot-animation {
+            0% {
+                left: calc(100% - var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+            }
+            25% {
+                left: calc(0% + var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+            }
+            50% {
+                left: calc(0% + var(--box-border-width)/2);
+                top: calc(0% + var(--box-border-width)/2);
+                background-position: 0% 0%;
+            }
+            75% {
+                left: calc(100% - var(--box-border-width)/2);
+                top: calc(0% + var(--box-border-width)/2);
+                background-position: 0% 0%;
+            }
+            100% {
+                left: calc(100% - var(--box-border-width)/2);
+                top: calc(100% - var(--box-border-width)/2);
+                background-position: 100% 50%;
+            }
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+        }
+
+        #animated-box-breathing-gif iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+
+        #content {
+            width: 90vmin;
+            max-width: 45em;
+            /* padding: 3rem 0; */
+            margin: auto;
+            padding: 1em 0;
+            margin-bottom: 1em;
+        }
+
+        #badge-buttons > p {
+            margin: 1.1em 0;
+        }
+
+        #badge-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1em;
+            height: 54px;
+        }
+
+        #badge-subtext {
+            /* margin-left: 0.5em; */
+            margin-top: 0.7em;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        #buymeacoffee {
+            display: contents;
+        }
+
+        #buymeacoffee img {
+            height: 54px;
+            background-color: #ffdd00;
+            border-radius: 1000px;
+        }
+
+        #audio-container {
+            width: 100%;
+            height: 54px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #audio-player {
+            width: 100%;
+        }
+
+        @-moz-document url-prefix() {
+            #audio-container {
+                background-color: #1a1a1a;
+                border-radius: 1000px;
+                padding: 0 8px;
+            }
+        }
+
+        audio::-webkit-media-controls {
+            filter: invert(1);
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: #e3e3e3;
+            justify-content: space-between;
+        }
+        
+        @media screen and (max-width:480px) {
+            audio::-webkit-media-controls-timeline-container,
+            audio::-webkit-media-controls-timeline
+            {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width:580px) {
+            audio::-webkit-media-controls-time-remaining-display,
+            audio::-webkit-media-controls-current-time-display
+            {
+                display: none;
+            }
+        }
+
+
+    </style>
     <div id="visual">
         <div id="box-breathing-container">
             <div id="box-container">
                 <div id="box"></div>
                 <div id="breath-indicator"></div>
                 <div id="dot"></div>
+                <div id="guide-text">
+                    <div id="breathe-in">Inhale</div>
+                    <div id="hold">Hold</div>
+                    <div id="breathe-out">Exhale</div>
+                </div>
+                <img style="position: absolute; inset: -5%; width: 110%; height: 110%; z-index: 1000;" alt="Box breathing visual" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAQAAACTbf5ZAAAAiklEQVR42u3PMQEAAAwCoNm/9Cr4Cw3IjYmwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsHDrASUpAHnJhbktAAAAAElFTkSuQmCC">
             </div>
         </div>
         <div id="guide-arrow">
-            <div>Guide</div>
+            <div>Guide, music & settings</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/>
             </svg>
         </div>
+        <div id="session-time"></div>
     </div>
     <div id="content">
-        <h1>Box Breathing Animation <span>An animated guide to help with calmness, mindfulness, stress and anxiety.</span></h1>
+        <div id="settings">
+            <div class="setting">
+                <label id="toggle-guide-text-setting" class="switch" role="button" aria-label="Toggle guide text visibility">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+                <div>
+                    Display breathing instructions
+                </div>
+            </div>
+            <div class="setting">
+                <div id="box-size-setting" class="incrementer">
+                    <button onclick="shiftBoxSize(-0.1)" class="decrement">－</button>
+                    <div class="incrementer-value"></div>
+                    <button onclick="shiftBoxSize(0.1)" class="increment">＋</button>
+                </div>
+                <div>
+                    Size adjustment
+                </div>
+            </div>
+            <div class="setting" style="margin-top: 1em;">
+                <label id="toggle-session-time-setting" class="switch" role="button" aria-label="Toggle session time visibility">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <div>
+                    Show session time <span id="session-time-extra"></span>
+                </div>
+            </div>
+            <div class="setting">
+                <div id="reveal-timer-setting" class="incrementer">
+                    <button onclick="shiftRevealSessionTime(-1)" class="decrement">－</button>
+                    <div class="incrementer-value"></div>
+                    <button onclick="shiftRevealSessionTime(1)" class="increment">＋</button>
+                </div>
+                <div>
+                    Reveal session time after delay
+                </div>
+            </div>
+        </div>
+        <h1>
+            <details>
+                <summary>Box Breathing Technique Visual</summary>
+                Use this animated visual or video to learn the box breathing technique, which is a calming exercise used by Navy SEALs, consisting of equal parts inhaling, holding, exhaling, and holding, typically through the nose to optimize breathing benefits. Distinct from the 4-7-8 method, which emphasizes a longer exhale, box breathing offers a simple, rhythmic pattern to help reduce anxiety and enhance focus. With the aid of an instructional video and a meditation timer, users can practice and maintain a consistent routine, experiencing benefits such as lower blood pressure and a balanced autonomic nervous system. This resource is available as an app, enabling regular practice to improve overall well-being.
+            </details>
+        </h1>
+        <h2>
+            An animated guide to help with calmness, mindfulness, stress and anxiety.
+        </h2>
         <p>
-            This animation visually guides you in the exercise. It is also known as square breathing or diaphragmatic breathing. It can have numerous benefits such as reduced anxiety, stress and increased mindfulness, calmness and relaxation. 
+            Box breathing has been used by Navy SEALs to remain calm and focused in high-stress situations. The benefits of incorporating box breathing into your routine can include reduced stress and anxiety, improved concentration, and a sense of calm.
         </p>
+        <style>
+            .incrementer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 2px;
+                height: 36px;
+            }
+
+            .incrementer button,
+            .incrementer .incrementer-value {
+                outline: none;
+                border: none;
+                padding: 0;
+                height: 100%;
+                display: flex;
+                text-align: center;
+                justify-content: center;
+                align-items: center;
+                color: white;
+            }
+
+            .incrementer .incrementer-value {
+                width: 70px;
+                font-size: 16px;
+                background-color: #212121;
+            }
+
+            .incrementer button {
+                cursor: pointer;
+                width: 34px;
+                font-size: 16px;
+                line-height: 1em;
+                background-color: #2f2f2f;
+            }
+            .incrementer button:nth-last-child(1) {
+                border-bottom-right-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+            .incrementer button:nth-child(1) {
+                border-bottom-left-radius: 5px;
+                border-top-left-radius: 5px;
+            }
+        </style>
         <p>
             <div id="badge-buttons">
                 <div id="audio-container">
@@ -95,349 +814,110 @@
                     </audio>
                 </div>
                 <a href="https://www.buymeacoffee.com/lassebomh" target="_blank" id="buymeacoffee">
-                    <img src="./buymeacoffee.png" alt="Buy Me A Coffee" >
+                    <img src="./buymeacoffee.png" alt="Buy Me A Coffee" width="192" height="52" >
                 </a>
             </div>
             <div id="badge-subtext">
-                This is some calming music you can listen to while box breathing. It was made for this site, and you are free to download it and use it for anything you'd like without giving credit.
+                This is some calming music you can listen to while box breathing. It was made for this site, and you are free to download it and use it for anything you'd like without giving credit. <a href="./relax_10m.ogg" download>Download</a>
             </div>
         </p>
-        <p>
-            I made this site as a programming exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The code is fully open source and can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
-        </p>
-        <p>
-            If you found it useful and want to show your appreciation then you are very welcome to buy me a coffee :)
-        </p>
-        <h2>Guide for beginners</h2>
-        <ol>
-            <li>
-                Sit with a straight back and relax.
-            </li>
-            <li>
-                Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.
-            </li>
-            <li>
-                Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.
-            </li>
-            <li>
-                Tighten your stomach muscles, so that your stomach moves back in, as you exhale through pursed lips. The hand on your upper chest must remain as still as possible.
-            </li>
-        </ol>
-        <p>
-            Now breathe in the following pattern, while remembering to breathe in through your nose, and out through your mouth:
-            <ul>
-                <li>Breathe in (4s)</li>
-                <li>Hold (4s)</li>
-                <li>Breathe out (4s)</li>
-                <li>Hold (4s)</li>
-            </ul>
-        </p>
-        <p>
-            <b>Sometimes beginners feel out of breath when Box breathing, and this is completely normal.</b> This will pass as when your technique gets better, so don't worry about being a little too early or late in the cycle to remain comfortable.
-        </p>
-        <p>
-            Some of this information comes from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">this Cleveland Clinic article</a>.
-        </p>
-        <h2>Installing the app</h2>
-        <p>
-            This site works offline if you install it. These steps are for mobile.
-        </p>
-        <p>
-            On iPhone:
-            <ol>
-                <li>Open this site in Safari</li>
-                <li>Press the share button</li>
-                <li>Press "Add to Home Screen"</li>
-            </ol>
-            On Android:
-            <ol>
-                <li>Press on the triple-dot icon</li>
-                <li>Press "Install app" in Chrome or "Add to Home Screen" in FireFox </li>
-            </ol>
-        </p>
-        <p>
-            If you're on Chrome Desktop you can press the button to the left of the bookmark button in the url bar.
-        </p>
+        <section id="why-i-made-this-visualization">
+            <p>
+                I made this site as a programming exercise after seeing <a href="https://news.ycombinator.com/item?id=33586383">this post on HackerNews</a>. The code is fully open source and can be found <a href="https://github.com/lassebomh/box-breathing">on GitHub</a>.
+            </p>
+            <p>
+                If you found it useful and want to show your appreciation, then you are very welcome to buy me a coffee ❤️
+            </p>
+            <p>
+                It is worth mentioning another popular breathing technique, called the 4-7-8 method. It involves inhaling through the nose for 4 seconds, holding the breath for 7 seconds, and exhaling through the mouth for 8 seconds. Both techniques are beneficial, but box breathing is particularly favored for its simplicity and ease of remembering the equal 4-second intervals for each step of the cycle.
+            </p>
+        </section>
+        
+        <nav id="table-of-contents">
+            <p>
+                Table of contents:
+            </p>
+          <ol>
+            <li><a href="#guide-to-box-breathing">Guide to box breathing</a></li>
+            <li><a href="#installing-box-breathing-as-an-app">Installing as an app</a></li>
+            <li><a href="#animated-box-breathing-gif-video">Box breathing video</a></li>
+          </ol>
+        </nav>
+        
+        <main>
+            <section id="guide-to-box-breathing">
+                <h2>Box breathing for beginners</h2>
+                <p>
+                    Box breathing is a simple yet powerful breathing technique that can help reduce anxiety and improve focus. Here's how to practice the technique effectively:
+                </p>
+                <ol>
+                    <li>
+                        Sit with your back straight in a comfortable position. Relax your shoulders and body.
+                    </li>
+                    <li>
+                        Place one hand on your upper chest and the other hand just below your rib cage. This will allow you to monitor your diaphragm's movement as you breathe.
+                    </li>
+                    <li>
+                        Begin by slowly inhaling through your nose for a count of 4 seconds. Ensure that the hand on your stomach feels the rise of your abdomen, indicating diaphragmatic breathing, while the hand on your chest remains mostly still.
+                    </li>
+                    <li>
+                        After the inhalation, hold your breath for 4 seconds.
+                    </li>
+                    <li>
+                        Gently exhale through your mouth for 4 seconds. As you exhale, purse your lips slightly, but keep your jaw relaxed. Your abdomen should fall inward, and you should engage your stomach muscles to support the exhalation.
+                    </li>
+                    <li>
+                        Conclude the cycle by holding your breath for another 4 seconds before starting your next inhale.
+                    </li>
+                </ol>
+                <p>
+                    This pattern—inhale for 4 seconds, hold for 4 seconds, exhale for 4 seconds, and hold again for 4 seconds—can be a powerful technique for anxiety management. <b>Beginners might experience feeling out of breath during the exercise; however, with practice, your technique will improve, and being slightly early or late in the cycle is alright as long as you remain comfortable.</b>
+                </p>
+                <p>
+                    Remember that whether you breathe in through your nose or out through your mouth, the essence of the technique is to breathe deeply and rhythmically. By incorporating box breathing into your daily routine, you may enjoy a profound sense of relaxation and mental clarity.
+                </p>
+                <p>
+                    Some of this information comes from <a href="https://my.clevelandclinic.org/health/articles/9445-diaphragmatic-breathing">this Cleveland Clinic article</a>.
+                </p>
+            </section>
+    
+            <hr>
+
+            <section id="installing-box-breathing-as-an-app">
+                <h2>Installing the app</h2>
+                <p>
+                    This site works offline if you install it. These steps are for mobile.
+                </p>
+                <p>
+                    On iPhone:
+                    <ol>
+                        <li>Open this site in Safari</li>
+                        <li>Press the share button</li>
+                        <li>Press "Add to Home Screen"</li>
+                    </ol>
+                    On Android:
+                    <ol>
+                        <li>Press on the triple-dot icon</li>
+                        <li>Press "Install app"</li>
+                    </ol>
+                </p>
+                <p>
+                    If you're on Chrome Desktop you can press the button to the left of the bookmark button in the url bar.
+                </p>
+            </section>
+    
+            <hr>
+    
+            <section id="animated-box-breathing-gif-video">
+                <h2>Box Breathing Video</h2>
+                <p>
+                    I've gotten requests to create a video from this, so here it is:
+                </p>
+                <div id="video-container">
+                    <iframe width="560" height="315" loading="lazy" src="https://www.youtube-nocookie.com/embed/bphe8KhcGQY?si=9bdDUg6pNqC_s-vB" title="Box breathing video GIF" frameborder="0" allow="clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </section>
+        </main>
     </div>
 </body>
-<style>
-    :root {
-        --bg-color: #131313;
-
-        --animation-options: 16s infinite cubic-bezier(0.2, 0, 0.8, 1);
-
-        --dot-size: 1.2rem;
-        --box-border-width: 2px;
-        --box-border-color: white;
-        --box-side-length: calc(min(50vmin, 250px));
-        --box-fill-color-transition: #003794;
-        --box-fill-color: #006ed4;
-
-        --breath-gradient: linear-gradient(
-            135deg,
-            var(--box-fill-color) 0%,
-            var(--box-fill-color-transition) 30%,
-            var(--bg-color) 75%
-        );
-
-
-        font-size: calc(min(18px, 5vmin));
-
-    }
-
-    h1 {
-        line-height: 1.2em;
-    }
-
-    h1, h2, h3, h4, h5 {
-        font-weight: 500;
-    }
-
-    h1 > span {
-        font-weight: 300;
-        color: #999;
-        font-size: 0.7em;
-        line-height: 0em;
-    }
-
-    h1 > span::before {
-        content:"\a";
-        white-space: pre;
-    }
-
-    body {
-        background-color: var(--bg-color);
-        color: var(--box-border-color);
-        font-family: 'IBM Plex Sans', sans-serif;
-        margin: 0;
-    }
-
-    blockquote {
-        border-left: 2px solid #444;
-        color: #888;
-        margin-left: 0.5rem;
-        padding-left: 0.5rem;
-    }
-
-    ul {
-        padding-left: 1.5rem;
-    }
-
-    li {
-        margin: 0.25em 0;
-    }
-
-    a:visited {
-        color: #a748ff;
-    }
-
-    a {
-        color: #5871ff;
-    }
-
-    :root::-webkit-scrollbar { width: 0 }
-    :root { scrollbar-width: none; }
-
-    input {
-        background-color: #222;
-        border-bottom: 1px solid #aaa;
-        border: 0;
-        padding: 8px;
-        color: white;
-        width: 60px;
-        appearance: textfield;
-    }
-    
-    #visual {
-        position: relative;
-    }
-
-    #guide-arrow {
-        position: fixed;
-        bottom: 6vh;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 0;
-        transition: opacity .5s linear;
-        fill: #888;
-        text-align: center;
-        pointer-events: none;
-    }
-
-    #box-breathing-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-
-        border-bottom: 1px solid #444;
-    }
-
-    #box-container {
-        position: relative;
-    }
-    
-    #box {
-        width: var(--box-side-length);
-        height: var(--box-side-length);
-        border: var(--box-border-width) solid var(--box-border-color);
-    }
-    
-    #breath-indicator {
-        background: var(--breath-gradient);
-        background-size: 700% 700%;
-        width: 100%;
-        position: absolute;
-        box-sizing: border-box;
-        bottom: 0;
-        border-top: var(--box-border-width) solid var(--box-border-color);
-        z-index: -1;
-
-        animation: breath-indicator-animation var(--animation-options);
-    }
-
-    @keyframes breath-indicator-animation {
-        0% { height: 0%; background-position: 100% 50%; }
-        25% { height: 0%; background-position: 100% 50%; }
-        50% { height: 100%; background-position: 0% 0%; }
-        75% { height: 100%; background-position: 0% 0%; }
-        100% { height: 0%; background-position: 100% 50%; }
-    }
-
-    #dot {
-        width: var(--dot-size);
-        height: var(--dot-size);
-        position: absolute;
-        transform: translate(-50%, -50%);
-        border: var(--box-border-width) solid var(--box-border-color);
-        border-radius: 400rem;
-        background: #131313;
-        animation: dot-animation var(--animation-options);
-        
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 0.7em;
-
-        font-family: monospace;
-        font-weight: 800;
-        color: #ffff;
-
-        left: calc(0% + var(--box-border-width)/2);
-        top: calc(100% - var(--box-border-width)/2);
-    }
-
-    @keyframes dot-animation {
-        0% {
-            left: calc(100% - var(--box-border-width)/2);
-            top: calc(100% - var(--box-border-width)/2);
-            background-position: 100% 50%;
-        }
-        25% {
-            left: calc(0% + var(--box-border-width)/2);
-            top: calc(100% - var(--box-border-width)/2);
-            background-position: 100% 50%;
-        }
-        50% {
-            left: calc(0% + var(--box-border-width)/2);
-            top: calc(0% + var(--box-border-width)/2);
-            background-position: 0% 0%;
-        }
-        75% {
-            left: calc(100% - var(--box-border-width)/2);
-            top: calc(0% + var(--box-border-width)/2);
-            background-position: 0% 0%;
-        }
-        100% {
-            left: calc(100% - var(--box-border-width)/2);
-            top: calc(100% - var(--box-border-width)/2);
-            background-position: 100% 50%;
-        }
-    }
-
-    #content {
-        width: 90vmin;
-        max-width: 45em;
-        /* padding: 3rem 0; */
-        margin: auto;
-        padding: 1em 0;
-        margin-bottom: 1em;
-    }
-
-    #badge-buttons > p {
-        margin: 1.1em 0;
-    }
-
-    #badge-buttons {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1em;
-        height: 54px;
-    }
-
-    #badge-subtext {
-        /* margin-left: 0.5em; */
-        margin-top: 0.7em;
-        font-size: 0.8em;
-        color: #999;
-    }
-
-    #buymeacoffee {
-        display: contents;
-    }
-
-    #buymeacoffee img {
-        height: 54px;
-        background-color: #ffdd00;
-        border-radius: 1000px;
-    }
-
-    #audio-container {
-        width: 100%;
-        height: 54px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #audio-player {
-        width: 100%;
-    }
-
-    @-moz-document url-prefix() {
-        #audio-container {
-            background-color: #1a1a1a;
-            border-radius: 1000px;
-            padding: 0 8px;
-        }
-    }
-
-    audio::-webkit-media-controls {
-        filter: invert(1);
-    }
-
-    audio::-webkit-media-controls-panel {
-        background-color: #e3e3e3;
-        justify-content: space-between;
-    }
-    
-    @media screen and (max-width:480px) {
-        audio::-webkit-media-controls-timeline-container,
-        audio::-webkit-media-controls-timeline
-        {
-            display: none;
-        }
-    }
-
-    @media screen and (max-width:580px) {
-        audio::-webkit-media-controls-time-remaining-display,
-        audio::-webkit-media-controls-current-time-display
-        {
-            display: none;
-        }
-    }
-
-
-</style>
 </html>
