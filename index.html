@@ -157,6 +157,7 @@
 
         const toggleGuideText = document.querySelector("#toggle-guide-text-setting > input");
         const toggleSessionTime = document.querySelector("#toggle-session-time-setting > input");
+        const toggleWakelock = document.querySelector("#toggle-wakelock > input");
 
         const guideTextContainer = document.getElementById("guide-text");
         const sessionTime = document.getElementById("session-time");
@@ -214,6 +215,37 @@
         });
 
         toggleGuideText.checked = refreshGuideVisibility();
+
+        let wakeLock = null;
+
+        async function setWakeLock(enabled) {
+          if (enabled) {
+            try {
+              wakeLock = await navigator.wakeLock.request("screen");
+              wakeLock.addEventListener("release", () => {
+                wakeLock = null;
+              });
+            } catch (e) {}
+          } else if (wakeLock) {
+            await wakeLock.release();
+            wakeLock = null;
+          }
+        }
+
+        const wakelockEnabled = localStorage.getItem("wake_lock") !== "false";
+        toggleWakelock.checked = wakelockEnabled;
+        setWakeLock(wakelockEnabled);
+
+        toggleWakelock.addEventListener("change", () => {
+          localStorage.setItem("wake_lock", toggleWakelock.checked);
+          setWakeLock(toggleWakelock.checked);
+        });
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible" && localStorage.getItem("wake_lock") !== "false") {
+            setWakeLock(true);
+          }
+        });
 
         function refreshSessionVisibility(delay) {
           if (sessionRevealTimeout) clearTimeout(sessionRevealTimeout);
@@ -904,6 +936,13 @@
             <span class="slider"></span>
           </label>
           <div>Display breathing instructions</div>
+        </div>
+        <div class="setting">
+          <label id="toggle-wakelock" class="switch" role="button" aria-label="Toggle wake lock">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+          <div>Prevent screen dimming</div>
         </div>
       </div>
       <h1>
